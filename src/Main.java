@@ -2,31 +2,32 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Pedido pedido1 = new PedidoComida(
-                101,
-                "Av. Libertad 123",
-                "Comida"
-        );
+        Pedido[] pedidos = {
 
-        Pedido pedido2 = new PedidoEncomienda(
-                102,
-                "Calle Los Robles 456",
-                "Encomienda"
-        );
+                new PedidoComida(
+                        1,
+                        "Av. Italia 456",
+                        4
+                ),
 
-        Pedido pedido3 = new PedidoExpress(
-                103,
-                "Pasaje Central 789",
-                "Express"
-        );
+                new PedidoEncomienda(
+                        2,
+                        "Av. Independencia 123",
+                        6
+                ),
 
-        pedido1.asignarRepartidor();
-        ((PedidoComida) pedido1).asignarRepartidor("Juan Pérez");
+                new PedidoExpress(
+                        3,
+                        "Av. Apoquindo 1500",
+                        7
+                )
+        };
 
-        pedido2.asignarRepartidor();
-        ((PedidoEncomienda) pedido2).asignarRepartidor("Camila Soto");
+        for (Pedido pedido : pedidos) {
 
-        pedido3.asignarRepartidor();
-        ((PedidoExpress) pedido3).asignarRepartidor("Luis Díaz");
+            pedido.mostrarResumen();
+
+            System.out.println("----------------------------");
+        }
     }
 }
