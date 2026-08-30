@@ -22,4 +22,18 @@ public class PedidoEncomienda extends Pedido {
         System.out.println("Tiempo estimado de entrega: "
                 + calcularTiempoEntrega() + " minutos");
     }
+    @Override
+    public void asignarRepartidor() {
+
+        System.out.println("Asignando repartidor...");
+        System.out.println("Validando peso y embalaje... OK");
+    }
+
+    @Override
+    public void asignarRepartidor(String nombreRepartidor) {
+
+        System.out.println("Asignando repartidor...");
+        System.out.println("Validando peso y embalaje... OK");
+        System.out.println("Repartidor asignado: " + nombreRepartidor);
+    }
 }

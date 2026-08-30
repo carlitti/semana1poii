@@ -28,5 +28,13 @@ public abstract class Pedido {
         System.out.println("Distancia: " + distanciaKm + " km");
     }
 
+    public void asignarRepartidor() {
+        System.out.println("Asignando repartidor...");
+    }
+
+    public void asignarRepartidor(String nombreRepartidor) {
+        System.out.println("Pedido asignado a " + nombreRepartidor);
+    }
+
     public abstract int calcularTiempoEntrega();
 }

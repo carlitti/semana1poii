@@ -31,8 +31,11 @@ La aplicación modela el sistema de gestión de pedidos de la empresa de reparto
 - Sobrescritura de métodos (Override)
 - Sobrecarga de métodos (Overload)
 - Clases abstractas
-- Reutilización de código
+- Interfaces
 - Abstracción
+- Reutilización de código
+- ArrayList
+- Desacoplamiento de responsabilidades
 
 ---
 
@@ -47,6 +50,16 @@ La aplicación modela el sistema de gestión de pedidos de la empresa de reparto
 - PedidoComida
 - PedidoEncomienda
 - PedidoExpress
+
+## Interfaces
+
+- Despachable
+- Cancelable
+- Rastreable
+
+## Clases de Apoyo
+
+- ControladorDeEnvios
 
 ## Clase Principal
 
@@ -91,3 +104,47 @@ Durante esta etapa el proyecto fue extendido mediante la implementación de una 
 
 ```java
 mostrarResumen()
+```
+
+Permite visualizar la información básica de cada pedido.
+
+### Método Abstracto
+
+```java
+calcularTiempoEntrega()
+```
+
+Es implementado de manera diferente por cada subclase.
+
+### Lógica de Tiempo de Entrega
+
+#### PedidoComida
+
+```text
+15 minutos + 2 minutos por cada kilómetro
+```
+
+#### PedidoEncomienda
+
+```text
+20 minutos + 1.5 minutos por kilómetro
+```
+
+#### PedidoExpress
+
+```text
+10 minutos base + 5 minutos extra si supera los 5 km
+```
+
+### Conceptos Aplicados
+
+- Clases abstractas
+- Abstracción
+- Herencia
+- Polimorfismo
+- Reutilización de código
+
+---
+
+# Semana 3
+## Diseñando un sistema 
