@@ -1,3 +1,5 @@
+package model;
+
 public class PedidoEncomienda extends Pedido {
 
     public PedidoEncomienda(int idPedido,

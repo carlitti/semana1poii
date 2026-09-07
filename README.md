@@ -36,6 +36,10 @@ La aplicación modela el sistema de gestión de pedidos de la empresa de reparto
 - Reutilización de código
 - ArrayList
 - Desacoplamiento de responsabilidades
+- Programación concurrente
+- Runnable
+- ExecutorService
+- Manejo de excepciones
 
 ---
 
@@ -43,23 +47,24 @@ La aplicación modela el sistema de gestión de pedidos de la empresa de reparto
 
 ## Clase Base
 
-- Pedido
+- model.Pedido
 
 ## Clases Derivadas
 
-- PedidoComida
-- PedidoEncomienda
-- PedidoExpress
+- model.PedidoComida
+- model.PedidoEncomienda
+- model.PedidoExpress
 
 ## Interfaces
 
-- Despachable
-- Cancelable
-- Rastreable
+- interfaces.Despachable
+- interfaces.Cancelable
+- interfaces.Rastreable
 
 ## Clases de Apoyo
 
-- ControladorDeEnvios
+- controlador.ControladorDeEnvios
+- model.Repartidor
 
 ## Clase Principal
 
@@ -74,15 +79,15 @@ Durante esta etapa se implementó una jerarquía de clases para representar dist
 
 ### Funcionalidades
 
-#### Pedido Comida
+#### PedidoComida
 - Verificación de mochila térmica.
 - Asignación de repartidor.
 
-#### Pedido Encomienda
+#### PedidoEncomienda
 - Validación de peso y embalaje.
 - Asignación de repartidor.
 
-#### Pedido Express
+#### PedidoExpress
 - Búsqueda de repartidor más cercano.
 - Asignación de repartidor.
 
@@ -147,4 +152,170 @@ Es implementado de manera diferente por cada subclase.
 ---
 
 # Semana 3
-## Diseñando un sistema 
+## Diseñando un sistema orientado a objetos con clases abstractas, polimorfismo e interfaces
+
+Durante esta etapa se integraron todos los conceptos desarrollados anteriormente, incorporando interfaces para desacoplar responsabilidades y mejorar la organización del sistema.
+
+### Interfaces Implementadas
+
+#### Despachable
+
+```java
+despachar()
+```
+
+Permite gestionar el despacho de pedidos.
+
+#### Cancelable
+
+```java
+cancelar()
+```
+
+Permite cancelar pedidos o envíos.
+
+#### Rastreable
+
+```java
+verHistorial()
+```
+
+Permite visualizar el historial de entregas.
+
+### Clase ControladorDeEnvios
+
+Se creó una clase encargada de:
+
+- Gestionar despachos.
+- Gestionar cancelaciones.
+- Mantener historial de entregas.
+- Centralizar operaciones del sistema.
+
+### Funcionalidades Implementadas
+
+- Asignación automática de repartidores.
+- Asignación manual de repartidores.
+- Cálculo de tiempos de entrega.
+- Despacho de pedidos.
+- Cancelación de envíos.
+- Historial de entregas mediante ArrayList.
+
+### Conceptos Aplicados
+
+- Interfaces
+- Polimorfismo
+- Sobrescritura
+- Sobrecarga
+- Abstracción
+- ArrayList
+- Desacoplamiento de responsabilidades
+
+---
+
+# Semana 4
+## Ejecutando tareas en paralelo con hilos en Java
+
+Durante esta etapa se incorporó programación concurrente al sistema SpeedFast, permitiendo simular múltiples repartidores realizando entregas de forma simultánea.
+
+### Clase Repartidor
+
+Se implementó una clase llamada:
+
+```java
+Repartidor
+```
+
+La cual implementa:
+
+```java
+Runnable
+```
+
+Cada repartidor posee:
+
+- Nombre del repartidor.
+- Lista de pedidos asignados.
+- Ejecución independiente mediante hilos.
+
+### Concurrencia Implementada
+
+Se utilizó:
+
+```java
+ExecutorService
+```
+
+para ejecutar múltiples repartidores en paralelo.
+
+Cada repartidor:
+
+- Recorre sus pedidos.
+- Informa avances por consola.
+- Simula tiempos de entrega mediante:
+
+```java
+Thread.sleep()
+```
+
+- Finaliza sus entregas de forma independiente.
+
+### Funcionalidades Implementadas
+
+- Ejecución simultánea de repartidores.
+- Simulación de entregas concurrentes.
+- Procesamiento paralelo de pedidos.
+- Gestión de múltiples entregas.
+- Finalización controlada de los hilos.
+
+### Manejo de Excepciones
+
+Se implementó manejo de:
+
+```java
+InterruptedException
+```
+
+para garantizar la continuidad y estabilidad de la ejecución concurrente.
+
+### Ejemplo de Salida
+
+```text
+[Repartidor: Luis] Entregando PedidoExpress #103
+[Repartidor: Daniela] Entregando PedidoEncomienda #105
+[Repartidor: Camila] Entregando PedidoComida #101
+
+[Repartidor: Luis] Pedido #103 entregado.
+[Repartidor: Daniela] Pedido #105 entregado.
+[Repartidor: Camila] Pedido #101 entregado.
+
+===== SIMULACIÓN FINALIZADA =====
+```
+
+### Conceptos Aplicados
+
+- Runnable
+- Programación concurrente
+- Hilos (Threads)
+- ExecutorService
+- Thread.sleep()
+- Manejo de excepciones
+- Paralelismo
+- Reutilización de clases
+
+---
+
+# Estado del Proyecto
+
+✅ Semana 1: Herencia, sobrescritura y sobrecarga.
+
+✅ Semana 2: Clase abstracta y cálculo de tiempos de entrega.
+
+✅ Semana 3: Interfaces, despacho, cancelación e historial de pedidos.
+
+✅ Semana 4: Programación concurrente mediante hilos y ExecutorService.
+
+---
+
+# Repositorio
+
+El proyecto se encuentra versionado mediante Git y alojado en GitHub para evidenciar el control de versiones y el desarrollo incremental de las actividades del curso.

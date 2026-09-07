@@ -1,3 +1,9 @@
+package controlador;
+
+import interfaces.Cancelable;
+import interfaces.Despachable;
+import interfaces.Rastreable;
+
 import java.util.ArrayList;
 
 public class ControladorDeEnvios
@@ -11,12 +17,12 @@ public class ControladorDeEnvios
 
     @Override
     public void despachar() {
-        System.out.println("Pedido despachado correctamente.");
+        System.out.println("model.Pedido despachado correctamente.");
     }
 
     @Override
     public void cancelar() {
-        System.out.println("→ Pedido cancelado exitosamente.");
+        System.out.println("→ model.Pedido cancelado exitosamente.");
     }
 
     @Override

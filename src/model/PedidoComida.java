@@ -1,31 +1,23 @@
-public class PedidoExpress extends Pedido {
+package model;
 
-    public PedidoExpress(int idPedido,
-                         String direccionEntrega,
-                         double distanciaKm) {
+public class PedidoComida extends Pedido {
 
+    public PedidoComida(int idPedido, String direccionEntrega, double distanciaKm) {
         super(idPedido, direccionEntrega, distanciaKm);
     }
 
     @Override
     public int calcularTiempoEntrega() {
-
-        int tiempo = 10;
-
-        if (getDistanciaKm() > 5) {
-            tiempo += 5;
-        }
-
-        return tiempo;
+        return 15 + (int)(2 * getDistanciaKm());
     }
 
     @Override
     public void mostrarResumen() {
 
-        System.out.println("\n===== PEDIDO EXPRESS =====");
+        System.out.println("\n===== PEDIDO COMIDA =====");
         super.mostrarResumen();
 
-        System.out.println("Tipo: Express");
+        System.out.println("Tipo: Comida");
         System.out.println("Tiempo estimado de entrega: "
                 + calcularTiempoEntrega() + " minutos");
     }
@@ -33,14 +25,14 @@ public class PedidoExpress extends Pedido {
     public void asignarRepartidor() {
 
         System.out.println("Asignando repartidor...");
-        System.out.println("Buscando repartidor más cercano...");
+        System.out.println("Verificando mochila térmica... OK");
     }
 
     @Override
     public void asignarRepartidor(String nombreRepartidor) {
 
         System.out.println("Asignando repartidor...");
-        System.out.println("Buscando repartidor más cercano...");
+        System.out.println("Verificando mochila térmica... OK");
         System.out.println("Repartidor asignado: " + nombreRepartidor);
     }
 }
