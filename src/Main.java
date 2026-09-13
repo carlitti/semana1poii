@@ -1,10 +1,8 @@
-import model.Pedido;
-import model.PedidoComida;
-import model.PedidoEncomienda;
-import model.PedidoExpress;
+import model.EstadoPedido;
+import model.PedidoSimple;
 import model.Repartidor;
+import model.ZonaDeCarga;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -13,72 +11,55 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Pedido pedido1 =
-                new PedidoComida(
-                        101,
-                        "Av. Italia 456",
-                        4);
+        ZonaDeCarga zona =
+                new ZonaDeCarga();
 
-        Pedido pedido2 =
-                new PedidoEncomienda(
-                        102,
-                        "Av. Santa Rosa 567",
-                        7);
+        System.out.println(
+                "[Zona de carga inicializada]"
+        );
 
-        Pedido pedido3 =
-                new PedidoExpress(
-                        103,
-                        "Av. Apoquindo 1500",
-                        8);
+        zona.agregarPedido(
+                new PedidoSimple(
+                        1,
+                        "Santiago Centro"));
 
-        Pedido pedido4 =
-                new PedidoComida(
-                        104,
-                        "Av. Libertad 200",
-                        3);
+        zona.agregarPedido(
+                new PedidoSimple(
+                        2,
+                        "Providencia"));
 
-        Pedido pedido5 =
-                new PedidoEncomienda(
-                        105,
-                        "Los Carrera 500",
-                        10);
+        zona.agregarPedido(
+                new PedidoSimple(
+                        3,
+                        "Ñuñoa"));
 
-        Pedido pedido6 =
-                new PedidoExpress(
-                        106,
-                        "O'Higgins 350",
-                        5);
+        zona.agregarPedido(
+                new PedidoSimple(
+                        4,
+                        "Recoleta"));
 
-        Repartidor camila =
-                new Repartidor(
-                        "Camila",
-                        Arrays.asList(
-                                pedido1,
-                                pedido2
-                        ));
-
-        Repartidor luis =
-                new Repartidor(
-                        "Luis",
-                        Arrays.asList(
-                                pedido3,
-                                pedido4
-                        ));
-
-        Repartidor daniela =
-                new Repartidor(
-                        "Daniela",
-                        Arrays.asList(
-                                pedido5,
-                                pedido6
-                        ));
+        zona.agregarPedido(
+                new PedidoSimple(
+                        5,
+                        "Las Condes"));
 
         ExecutorService executor =
                 Executors.newFixedThreadPool(3);
 
-        executor.execute(camila);
-        executor.execute(luis);
-        executor.execute(daniela);
+        executor.execute(
+                new Repartidor(
+                        "Juan",
+                        zona));
+
+        executor.execute(
+                new Repartidor(
+                        "Camila",
+                        zona));
+
+        executor.execute(
+                new Repartidor(
+                        "Pedro",
+                        zona));
 
         executor.shutdown();
 
@@ -86,20 +67,15 @@ public class Main {
 
             executor.awaitTermination(
                     1,
-                    TimeUnit.MINUTES
-            );
+                    TimeUnit.MINUTES);
 
         } catch (InterruptedException e) {
-
-            System.out.println(
-                    "Error al esperar los hilos."
-            );
 
             Thread.currentThread().interrupt();
         }
 
         System.out.println(
-                "\n===== SIMULACIÓN FINALIZADA ====="
+                "\nTodos los pedidos han sido entregados correctamente"
         );
     }
 }
