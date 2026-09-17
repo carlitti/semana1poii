@@ -1,4 +1,4 @@
-package model;
+package modelo;
 
 public abstract class Pedido {
 
@@ -25,7 +25,7 @@ public abstract class Pedido {
     }
 
     public void mostrarResumen() {
-        System.out.println("ID model.Pedido: " + idPedido);
+        System.out.println("ID Pedido: " + idPedido);
         System.out.println("Dirección: " + direccionEntrega);
         System.out.println("Distancia: " + distanciaKm + " km");
     }
@@ -35,8 +35,10 @@ public abstract class Pedido {
     }
 
     public void asignarRepartidor(String nombreRepartidor) {
-        System.out.println("model.Pedido asignado a " + nombreRepartidor);
+        System.out.println("Pedido asignado a " + nombreRepartidor);
     }
 
     public abstract int calcularTiempoEntrega();
+
+    public abstract String getTipo();
 }
