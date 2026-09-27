@@ -5,27 +5,38 @@ public class Repartidor implements Runnable {
     private String nombre;
     private ZonaDeCarga zonaDeCarga;
 
+    // Constructor utilizado para la lógica concurrente
     public Repartidor(String nombre, ZonaDeCarga zonaDeCarga) {
         this.nombre = nombre;
         this.zonaDeCarga = zonaDeCarga;
     }
 
+    // Constructor utilizado para obtener repartidores desde MySQL
+    public Repartidor(String nombre) {
+        this.nombre = nombre;
+        this.zonaDeCarga = null;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
     @Override
     public void run() {
+
+        if (zonaDeCarga == null) {
+            return;
+        }
 
         try {
 
             while (true) {
 
-                PedidoSimple pedido =
-                        zonaDeCarga.retirarPedido();
+                PedidoSimple pedido = zonaDeCarga.retirarPedido();
 
                 if (pedido == null) {
 
-                    System.out.println(
-                            "[Zona de carga vacía]"
-                    );
-
+                    System.out.println("[Zona de carga vacía]");
                     break;
                 }
 
@@ -36,9 +47,7 @@ public class Repartidor implements Runnable {
                                 pedido.getId()
                 );
 
-                pedido.setEstado(
-                        EstadoPedido.EN_REPARTO
-                );
+                pedido.setEstado(EstadoPedido.EN_REPARTO);
 
                 System.out.println(
                         "[Repartidor - " +
@@ -56,9 +65,7 @@ public class Repartidor implements Runnable {
 
                 Thread.sleep(2000);
 
-                pedido.setEstado(
-                        EstadoPedido.ENTREGADO
-                );
+                pedido.setEstado(EstadoPedido.ENTREGADO);
 
                 System.out.println(
                         "[Repartidor - " +

@@ -8,12 +8,14 @@ public class Main {
 
     public static void main(String[] args) {
 
-        SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(
+                () -> {
 
-            VentanaPrincipal ventana =
-                    new VentanaPrincipal();
+                    VentanaPrincipal ventana =
+                            new VentanaPrincipal();
 
-            ventana.setVisible(true);
-        });
+                    ventana.setVisible(true);
+                }
+        );
     }
 }

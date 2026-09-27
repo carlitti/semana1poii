@@ -1,21 +1,37 @@
 package vista;
 
-import modelo.GestorPedidos;
+import dao.EntregaDAO;
+import dao.PedidoDAO;
+import dao.RepartidorDAO;
+
+import modelo.Entrega;
 import modelo.Pedido;
+import modelo.Repartidor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 
 public class VentanaPrincipal extends JFrame {
 
-    private final GestorPedidos gestorPedidos;
+    private final PedidoDAO pedidoDAO;
+    private final RepartidorDAO repartidorDAO;
+    private final EntregaDAO entregaDAO;
 
     public VentanaPrincipal() {
 
-        gestorPedidos = new GestorPedidos();
+        pedidoDAO = new PedidoDAO();
+        repartidorDAO = new RepartidorDAO();
+        entregaDAO = new EntregaDAO();
 
-        setTitle("SpeedFast - Gestión de Entregas");
+        setTitle(
+                "SpeedFast - Gestión de Entregas"
+        );
+
         setSize(500, 400);
+
         setLocationRelativeTo(null);
 
         setDefaultCloseOperation(
@@ -28,7 +44,9 @@ public class VentanaPrincipal extends JFrame {
     private void inicializarComponentes() {
 
         JPanel panelPrincipal =
-                new JPanel(new BorderLayout(20, 20));
+                new JPanel(
+                        new BorderLayout(20, 20)
+                );
 
         panelPrincipal.setBorder(
                 BorderFactory.createEmptyBorder(
@@ -39,26 +57,38 @@ public class VentanaPrincipal extends JFrame {
                 )
         );
 
-        JLabel titulo = new JLabel(
-                "SPEEDFAST",
-                SwingConstants.CENTER
-        );
+        JLabel titulo =
+                new JLabel(
+                        "SPEEDFAST",
+                        SwingConstants.CENTER
+                );
 
         titulo.setFont(
-                new Font("Arial", Font.BOLD, 26)
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        26
+                )
         );
 
-        JLabel subtitulo = new JLabel(
-                "Gestión de Entregas",
-                SwingConstants.CENTER
-        );
+        JLabel subtitulo =
+                new JLabel(
+                        "Gestión de Entregas - MySQL",
+                        SwingConstants.CENTER
+                );
 
         subtitulo.setFont(
-                new Font("Arial", Font.PLAIN, 16)
+                new Font(
+                        "Arial",
+                        Font.PLAIN,
+                        16
+                )
         );
 
         JPanel encabezado =
-                new JPanel(new GridLayout(2, 1));
+                new JPanel(
+                        new GridLayout(2, 1)
+                );
 
         encabezado.add(titulo);
         encabezado.add(subtitulo);
@@ -70,14 +100,23 @@ public class VentanaPrincipal extends JFrame {
 
         JPanel panelBotones =
                 new JPanel(
-                        new GridLayout(3, 1, 10, 15)
+                        new GridLayout(
+                                3,
+                                1,
+                                10,
+                                15
+                        )
                 );
 
         JButton btnRegistrar =
-                new JButton("Registrar Pedido");
+                new JButton(
+                        "Registrar Pedido"
+                );
 
         JButton btnListar =
-                new JButton("Listar Pedidos");
+                new JButton(
+                        "Listar Pedidos"
+                );
 
         JButton btnEntrega =
                 new JButton(
@@ -93,25 +132,25 @@ public class VentanaPrincipal extends JFrame {
                 BorderLayout.CENTER
         );
 
-        btnRegistrar.addActionListener(e -> {
+        btnRegistrar.addActionListener(
+                e -> {
 
-            VentanaRegistroPedido ventana =
-                    new VentanaRegistroPedido(
-                            gestorPedidos
-                    );
+                    VentanaRegistroPedido ventana =
+                            new VentanaRegistroPedido();
 
-            ventana.setVisible(true);
-        });
+                    ventana.setVisible(true);
+                }
+        );
 
-        btnListar.addActionListener(e -> {
+        btnListar.addActionListener(
+                e -> {
 
-            VentanaListaPedidos ventana =
-                    new VentanaListaPedidos(
-                            gestorPedidos
-                    );
+                    VentanaListaPedidos ventana =
+                            new VentanaListaPedidos();
 
-            ventana.setVisible(true);
-        });
+                    ventana.setVisible(true);
+                }
+        );
 
         btnEntrega.addActionListener(
                 e -> iniciarEntrega()
@@ -122,11 +161,14 @@ public class VentanaPrincipal extends JFrame {
 
     private void iniciarEntrega() {
 
-        if (gestorPedidos.estaVacio()) {
+        List<Pedido> pedidos =
+                pedidoDAO.listarTodos();
+
+        if (pedidos.isEmpty()) {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "No existen pedidos registrados.",
+                    "No existen pedidos registrados en MySQL.",
                     "SpeedFast",
                     JOptionPane.WARNING_MESSAGE
             );
@@ -134,20 +176,19 @@ public class VentanaPrincipal extends JFrame {
             return;
         }
 
-        String[] pedidos =
-                new String[
-                        gestorPedidos.getPedidos().size()
-                        ];
+        String[] opciones =
+                new String[pedidos.size()];
 
         for (int i = 0;
-             i < gestorPedidos.getPedidos().size();
+             i < pedidos.size();
              i++) {
 
             Pedido pedido =
-                    gestorPedidos.getPedidos().get(i);
+                    pedidos.get(i);
 
-            pedidos[i] =
-                    "#" + pedido.getIdPedido()
+            opciones[i] =
+                    "#"
+                            + pedido.getIdPedido()
                             + " - "
                             + pedido.getTipo()
                             + " - "
@@ -155,19 +196,43 @@ public class VentanaPrincipal extends JFrame {
         }
 
         String seleccion =
-                (String) JOptionPane.showInputDialog(
-                        this,
-                        "Seleccione el pedido:",
-                        "Asignar Repartidor",
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                        pedidos,
-                        pedidos[0]
-                );
+                (String)
+                        JOptionPane.showInputDialog(
+                                this,
+                                "Seleccione el pedido:",
+                                "Asignar Repartidor",
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,
+                                opciones,
+                                opciones[0]
+                        );
 
         if (seleccion == null) {
             return;
         }
+
+        int indiceSeleccionado = -1;
+
+        for (int i = 0;
+             i < opciones.length;
+             i++) {
+
+            if (opciones[i].equals(seleccion)) {
+
+                indiceSeleccionado = i;
+
+                break;
+            }
+        }
+
+        if (indiceSeleccionado == -1) {
+            return;
+        }
+
+        Pedido pedidoSeleccionado =
+                pedidos.get(
+                        indiceSeleccionado
+                );
 
         String nombre =
                 JOptionPane.showInputDialog(
@@ -175,8 +240,8 @@ public class VentanaPrincipal extends JFrame {
                         "Nombre del repartidor:"
                 );
 
-        if (nombre == null ||
-                nombre.trim().isEmpty()) {
+        if (nombre == null
+                || nombre.trim().isEmpty()) {
 
             JOptionPane.showMessageDialog(
                     this,
@@ -188,36 +253,65 @@ public class VentanaPrincipal extends JFrame {
             return;
         }
 
-        int indice = 0;
+        Repartidor repartidor =
+                new Repartidor(
+                        nombre.trim()
+                );
 
-        for (int i = 0;
-             i < pedidos.length;
-             i++) {
+        int idRepartidor =
+                repartidorDAO.guardar(
+                        repartidor
+                );
 
-            if (pedidos[i].equals(seleccion)) {
+        if (idRepartidor == -1) {
 
-                indice = i;
-                break;
-            }
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se pudo registrar el repartidor.",
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
+            return;
         }
 
-        Pedido pedidoSeleccionado =
-                gestorPedidos
-                        .getPedidos()
-                        .get(indice);
+        Entrega entrega =
+                new Entrega(
+                        pedidoSeleccionado.getIdPedido(),
+                        idRepartidor,
+                        LocalDate.now(),
+                        LocalTime.now()
+                );
+
+        boolean entregaGuardada =
+                entregaDAO.guardar(entrega);
+
+        if (!entregaGuardada) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se pudo registrar la entrega.",
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
+            return;
+        }
 
         pedidoSeleccionado
-                .asignarRepartidor(nombre.trim());
+                .asignarRepartidor(
+                        nombre.trim()
+                );
 
         JOptionPane.showMessageDialog(
                 this,
-                "Pedido #" +
-                        pedidoSeleccionado.getIdPedido()
+                "Pedido #"
+                        + pedidoSeleccionado.getIdPedido()
                         + "\nTipo: "
                         + pedidoSeleccionado.getTipo()
                         + "\nRepartidor: "
                         + nombre.trim()
-                        + "\n\nEntrega iniciada correctamente.",
+                        + "\n\nEntrega registrada en MySQL correctamente.",
                 "SpeedFast",
                 JOptionPane.INFORMATION_MESSAGE
         );

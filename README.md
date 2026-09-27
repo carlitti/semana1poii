@@ -1,328 +1,328 @@
-# Proyecto SpeedFast
-## Desarrollo Orientado a Objetos II
+---
 
-### Autor
-Carlos Felipe González Cereceda
+# Semana 7
+
+## Conectando aplicaciones Java con bases de datos mediante JDBC
+
+Durante la Semana 7 se incorporó persistencia de datos al sistema SpeedFast mediante una conexión entre la aplicación Java y una base de datos MySQL utilizando JDBC.
+
+A diferencia de las semanas anteriores, donde los datos se almacenaban temporalmente en memoria, los pedidos, repartidores y entregas ahora pueden almacenarse de forma persistente en una base de datos.
 
 ---
 
-# Descripción
+## Base de datos
 
-Este proyecto corresponde al desarrollo progresivo de las actividades de la asignatura Desarrollo Orientado a Objetos II.
-
-La aplicación modela el sistema de gestión de pedidos de la empresa **SpeedFast**, incorporando progresivamente conceptos de Programación Orientada a Objetos, concurrencia, sincronización e interfaces gráficas desarrolladas con Java Swing.
-
----
-
-# Tecnologías utilizadas
-
-- Java JDK 25
-- IntelliJ IDEA
-- Java Swing
-- Git
-- GitHub
-
----
-
-# Semana 1
-
-## Herencia, sobrescritura y sobrecarga
-
-Durante la Semana 1 se desarrolló una jerarquía de clases para representar diferentes tipos de pedidos de SpeedFast.
-
-### Clases principales
-
-- Pedido
-- PedidoComida
-- PedidoEncomienda
-- PedidoExpress
-
-### Funcionalidades
-
-- Asignación de repartidores.
-- Validación de mochila térmica para pedidos de comida.
-- Validación de peso y embalaje para encomiendas.
-- Búsqueda del repartidor más cercano para pedidos express.
-
-### Conceptos aplicados
-
-- Encapsulamiento
-- Herencia
-- Polimorfismo
-- Sobrescritura de métodos
-- Sobrecarga de métodos
-
----
-
-# Semana 2
-
-## Clase abstracta y cálculo de tiempos de entrega
-
-Durante la Semana 2 se modificó la clase `Pedido` para convertirla en una clase abstracta.
-
-Se incorporó el método:
-
-```java
-calcularTiempoEntrega()
-```
-
-Cada tipo de pedido implementa su propia lógica para calcular el tiempo estimado.
-
-### PedidoComida
-
-Tiempo de entrega:
+Se creó la base de datos:
 
 ```text
-15 minutos + 2 minutos por kilómetro
+speedfast_db
 ```
 
-### PedidoEncomienda
-
-Tiempo de entrega:
+La base de datos contiene las siguientes tablas:
 
 ```text
-20 minutos + 1.5 minutos por kilómetro
+pedido
+repartidor
+entrega
 ```
 
-### PedidoExpress
+### Tabla pedido
 
-Tiempo de entrega:
-
-```text
-10 minutos base + 5 minutos adicionales si la distancia supera los 5 km
-```
-
-### Conceptos aplicados
-
-- Clases abstractas
-- Métodos abstractos
-- Herencia
-- Polimorfismo
-- Reutilización de código
-
----
-
-# Semana 3
-
-## Interfaces y gestión de envíos
-
-Durante la Semana 3 se incorporaron interfaces para separar las responsabilidades del sistema.
-
-### Interfaces implementadas
-
-- Despachable
-- Cancelable
-- Rastreable
-
-### Clase ControladorDeEnvios
-
-Se incorporó una clase encargada de gestionar diferentes operaciones relacionadas con los pedidos.
-
-### Funcionalidades
-
-- Despacho de pedidos.
-- Cancelación de pedidos.
-- Registro del historial de entregas.
-- Asignación automática de repartidores.
-- Asignación manual de repartidores.
-
-### Conceptos aplicados
-
-- Interfaces
-- Polimorfismo
-- Sobrescritura
-- Sobrecarga
-- Abstracción
-- ArrayList
-- Separación de responsabilidades
-
----
-
-# Semana 4
-
-## Programación concurrente
-
-Durante la Semana 4 se incorporó programación concurrente para simular múltiples repartidores realizando entregas simultáneamente.
-
-### Clase Repartidor
-
-La clase `Repartidor` implementa:
-
-```java
-Runnable
-```
-
-Cada repartidor puede procesar pedidos de manera independiente.
-
-### Herramientas utilizadas
-
-```java
-Runnable
-Thread.sleep()
-ExecutorService
-```
-
-### Funcionalidades
-
-- Ejecución simultánea de repartidores.
-- Procesamiento paralelo de pedidos.
-- Simulación de tiempos de entrega.
-- Manejo de excepciones.
-- Finalización controlada mediante ExecutorService.
-
-### Conceptos aplicados
-
-- Programación concurrente
-- Hilos
-- Runnable
-- ExecutorService
-- Thread.sleep()
-- Manejo de InterruptedException
-
----
-
-# Semana 5
-
-## Sincronizando procesos en sistemas concurrentes
-
-Durante la Semana 5 se implementó una zona de carga compartida protegida mediante sincronización para evitar que múltiples repartidores retiren el mismo pedido.
-
-### Componentes
-
-- PedidoSimple
-- EstadoPedido
-- ZonaDeCarga
-- Repartidor
-
-### Estados de los pedidos
-
-Se utilizó un `enum` denominado `EstadoPedido` con los siguientes estados:
-
-```text
-PENDIENTE
-EN_REPARTO
-ENTREGADO
-```
-
-### ZonaDeCarga
-
-La clase `ZonaDeCarga` representa un recurso compartido entre los diferentes repartidores.
-
-Se utilizó:
-
-```java
-synchronized
-```
-
-para controlar el acceso concurrente a los pedidos.
-
-### Funcionalidades
-
-- Retiro seguro de pedidos.
-- Entrega concurrente.
-- Actualización del estado de los pedidos.
-- Prevención de condiciones de carrera.
-- Control de acceso al recurso compartido.
-
-### Conceptos aplicados
-
-- Synchronization
-- synchronized
-- Runnable
-- ExecutorService
-- Thread.sleep()
-- Enum
-- Recursos compartidos
-- Control de concurrencia
-- Prevención de condiciones de carrera
-
----
-
-# Semana 6
-
-## Diseñando interfaces gráficas para aplicaciones en Java
-
-Durante la Semana 6 se incorporó una interfaz gráfica de escritorio al sistema SpeedFast utilizando **Java Swing**.
-
-La aplicación permite realizar las principales operaciones de gestión de pedidos mediante ventanas, formularios, botones y tablas.
-
-Los pedidos se mantienen temporalmente en memoria durante la ejecución de la aplicación.
-
----
-
-## Organización de Semana 6
-
-Para separar las responsabilidades de la aplicación se utilizaron los siguientes paquetes:
-
-```text
-modelo
-vista
-main
-```
-
-### Paquete modelo
-
-Contiene las clases relacionadas con los pedidos y la gestión de la información.
-
-Entre ellas:
-
-- Pedido
-- PedidoComida
-- PedidoEncomienda
-- PedidoExpress
-- GestorPedidos
-
-### Paquete vista
-
-Contiene las interfaces gráficas desarrolladas utilizando Java Swing.
-
-- VentanaPrincipal
-- VentanaRegistroPedido
-- VentanaListaPedidos
-
-### Paquete main
-
-Contiene la clase:
-
-- Main
-
-que inicia la aplicación gráfica.
-
----
-
-# Ventana Principal
-
-La clase `VentanaPrincipal` representa el menú principal del sistema.
-
-Permite acceder a:
-
-- Registrar Pedido.
-- Listar Pedidos.
-- Asignar Repartidor / Iniciar Entrega.
-
-La ventana fue implementada utilizando `JFrame`.
-
----
-
-# Registro de Pedidos
-
-La clase `VentanaRegistroPedido` permite registrar nuevos pedidos.
-
-El formulario incluye:
+Almacena:
 
 - ID del pedido.
 - Dirección de entrega.
 - Tipo de pedido.
-- Botón Guardar Pedido.
+- Estado del pedido.
 
-El tipo de pedido se selecciona utilizando un:
-
-```java
-JComboBox
-```
-
-con las opciones:
+Los tipos utilizados son:
 
 ```text
-Comida
-Encomienda
+COMIDA
+ENCOMIENDA
+EXPRESS
+```
+
+Los pedidos se registran inicialmente con estado:
+
+```text
+PENDIENTE
+```
+
+### Tabla repartidor
+
+Almacena:
+
+- ID del repartidor.
+- Nombre del repartidor.
+
+### Tabla entrega
+
+Permite relacionar un pedido con un repartidor.
+
+Almacena:
+
+- ID de la entrega.
+- ID del pedido.
+- ID del repartidor.
+- Fecha.
+- Hora.
+
+Se implementaron claves foráneas para mantener la relación entre las tablas `pedido`, `repartidor` y `entrega`.
+
+---
+
+## Conexión JDBC
+
+Se agregó MySQL Connector/J al proyecto para permitir la comunicación entre Java y MySQL.
+
+La conexión se administra mediante la clase:
+
+```java
+ConexionBD
+```
+
+La aplicación establece conexión con:
+
+```text
+jdbc:mysql://localhost:3306/speedfast_db
+```
+
+Para abrir las conexiones se utiliza:
+
+```java
+DriverManager
+```
+
+También se implementó manejo de excepciones mediante:
+
+```java
+SQLException
+```
+
+y cierre automático de recursos utilizando `try-with-resources`.
+
+---
+
+## Patrón DAO
+
+Para separar la lógica de acceso a datos del resto de la aplicación se implementaron las siguientes clases:
+
+```text
+PedidoDAO
+RepartidorDAO
+EntregaDAO
+```
+
+### PedidoDAO
+
+Permite:
+
+- Guardar pedidos en MySQL.
+- Consultar pedidos registrados.
+- Recuperar información para mostrarla en la interfaz gráfica.
+
+Las operaciones utilizan:
+
+```java
+PreparedStatement
+ResultSet
+```
+
+### RepartidorDAO
+
+Permite:
+
+- Registrar repartidores.
+- Consultar los repartidores almacenados en la base de datos.
+
+La información obtenida desde MySQL es transformada nuevamente en objetos Java.
+
+### EntregaDAO
+
+Permite registrar una entrega relacionando:
+
+```text
+Pedido
+   +
+Repartidor
+   +
+Fecha
+   +
+Hora
+```
+
+La operación utiliza los identificadores correspondientes del pedido y del repartidor.
+
+---
+
+## Integración con Java Swing
+
+La interfaz gráfica desarrollada durante la Semana 6 fue integrada con la base de datos MySQL.
+
+El flujo de registro funciona de la siguiente manera:
+
+```text
+VentanaRegistroPedido
+        |
+        v
+    PedidoDAO
+        |
+        v
+      JDBC
+        |
+        v
+     MySQL
+```
+
+Al presionar **Guardar Pedido**, la información ingresada en el formulario se almacena directamente en la tabla `pedido`.
+
+---
+
+## Listado de pedidos desde MySQL
+
+La ventana `VentanaListaPedidos` consulta directamente los pedidos almacenados en la base de datos.
+
+El flujo utilizado es:
+
+```text
+MySQL
+  |
+  v
+PedidoDAO
+  |
+  v
+ResultSet
+  |
+  v
+List<Pedido>
+  |
+  v
+JTable
+```
+
+El `JTable` muestra:
+
+- ID.
+- Dirección.
+- Tipo.
+- Tiempo estimado.
+
+El botón de actualización permite consultar nuevamente la información almacenada en MySQL.
+
+---
+
+## Registro de repartidores y entregas
+
+Desde la ventana principal es posible seleccionar un pedido registrado y asignarle un repartidor.
+
+Cuando se inicia una entrega:
+
+1. Se selecciona un pedido almacenado en MySQL.
+2. Se ingresa el nombre del repartidor.
+3. El repartidor se registra en la tabla `repartidor`.
+4. MySQL genera el ID del repartidor.
+5. Se registra la relación entre el pedido y el repartidor en la tabla `entrega`.
+6. Se almacena la fecha y hora de la operación.
+7. Se muestra una confirmación al usuario.
+
+---
+
+## Persistencia de datos
+
+Se comprobó el funcionamiento de la persistencia cerrando completamente la aplicación y ejecutándola nuevamente.
+
+Los pedidos registrados anteriormente continuaron disponibles al consultar la base de datos desde la ventana de listado.
+
+Esto demuestra que la información ya no depende únicamente de una colección almacenada temporalmente en memoria.
+
+---
+
+## Componentes utilizados
+
+Durante la Semana 7 se utilizaron:
+
+- MySQL
+- JDBC
+- MySQL Connector/J
+- DriverManager
+- Connection
+- PreparedStatement
+- ResultSet
+- SQLException
+- Patrón DAO
+- Java Swing
+- JTable
+- JOptionPane
+- Claves primarias
+- Claves foráneas
+- Persistencia de datos
+
+---
+
+## Estructura de acceso a datos
+
+Se incorporó el paquete:
+
+```text
+dao
+```
+
+con las clases:
+
+```text
+dao
+├── ConexionBD.java
+├── PedidoDAO.java
+├── RepartidorDAO.java
+└── EntregaDAO.java
+```
+
+Estas clases mantienen separada la lógica de acceso a MySQL de las clases correspondientes al modelo y la interfaz gráfica.
+
+---
+
+## Funcionalidades implementadas en Semana 7
+
+- Conexión de Java con MySQL mediante JDBC.
+- Creación de la base de datos `speedfast_db`.
+- Creación de las tablas `pedido`, `repartidor` y `entrega`.
+- Implementación de claves primarias y foráneas.
+- Registro de pedidos desde Java Swing.
+- Persistencia de pedidos en MySQL.
+- Consulta de pedidos almacenados.
+- Visualización de los pedidos mediante JTable.
+- Registro de repartidores.
+- Registro de entregas.
+- Relación entre pedidos y repartidores.
+- Manejo de errores SQL.
+- Cierre automático de recursos JDBC.
+- Persistencia de datos después de cerrar la aplicación.
+
+---
+
+# Estado del proyecto
+
+✅ Semana 1: Herencia, sobrescritura y sobrecarga.
+
+✅ Semana 2: Clases abstractas y cálculo de tiempos de entrega.
+
+✅ Semana 3: Interfaces, despacho, cancelación e historial.
+
+✅ Semana 4: Programación concurrente mediante Runnable y ExecutorService.
+
+✅ Semana 5: Sincronización, estados y zona de carga compartida.
+
+✅ Semana 6: Interfaz gráfica mediante Java Swing.
+
+✅ Semana 7: Persistencia de datos mediante MySQL, JDBC y patrón DAO.
+
+---
+
+# Autor
+
+Carlos Felipe González Cereceda
+
+## Desarrollo Orientado a Objetos II
+
+Proyecto académico SpeedFast.

@@ -1,6 +1,6 @@
 package vista;
 
-import modelo.GestorPedidos;
+import dao.PedidoDAO;
 import modelo.Pedido;
 import modelo.PedidoComida;
 import modelo.PedidoEncomienda;
@@ -11,15 +11,15 @@ import java.awt.*;
 
 public class VentanaRegistroPedido extends JFrame {
 
-    private final GestorPedidos gestorPedidos;
-
     private JTextField txtId;
     private JTextField txtDireccion;
     private JComboBox<String> comboTipo;
 
-    public VentanaRegistroPedido(GestorPedidos gestorPedidos) {
+    private final PedidoDAO pedidoDAO;
 
-        this.gestorPedidos = gestorPedidos;
+    public VentanaRegistroPedido() {
+
+        pedidoDAO = new PedidoDAO();
 
         setTitle("SpeedFast - Registrar Pedido");
         setSize(450, 300);
@@ -31,9 +31,16 @@ public class VentanaRegistroPedido extends JFrame {
 
     private void inicializarComponentes() {
 
-        JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
+        JPanel panelPrincipal =
+                new JPanel(new BorderLayout(10, 10));
+
         panelPrincipal.setBorder(
-                BorderFactory.createEmptyBorder(20, 20, 20, 20)
+                BorderFactory.createEmptyBorder(
+                        20,
+                        20,
+                        20,
+                        20
+                )
         );
 
         JLabel titulo = new JLabel(
@@ -41,24 +48,35 @@ public class VentanaRegistroPedido extends JFrame {
                 SwingConstants.CENTER
         );
 
-        titulo.setFont(new Font("Arial", Font.BOLD, 18));
+        titulo.setFont(
+                new Font("Arial", Font.BOLD, 18)
+        );
 
-        panelPrincipal.add(titulo, BorderLayout.NORTH);
+        panelPrincipal.add(
+                titulo,
+                BorderLayout.NORTH
+        );
 
         JPanel formulario =
-                new JPanel(new GridLayout(3, 2, 10, 15));
+                new JPanel(
+                        new GridLayout(3, 2, 10, 15)
+                );
 
         formulario.add(new JLabel("ID:"));
 
         txtId = new JTextField();
         formulario.add(txtId);
 
-        formulario.add(new JLabel("Dirección:"));
+        formulario.add(
+                new JLabel("Dirección:")
+        );
 
         txtDireccion = new JTextField();
         formulario.add(txtDireccion);
 
-        formulario.add(new JLabel("Tipo:"));
+        formulario.add(
+                new JLabel("Tipo:")
+        );
 
         comboTipo = new JComboBox<>(
                 new String[]{
@@ -70,7 +88,10 @@ public class VentanaRegistroPedido extends JFrame {
 
         formulario.add(comboTipo);
 
-        panelPrincipal.add(formulario, BorderLayout.CENTER);
+        panelPrincipal.add(
+                formulario,
+                BorderLayout.CENTER
+        );
 
         JButton btnGuardar =
                 new JButton("Guardar Pedido");
@@ -89,10 +110,15 @@ public class VentanaRegistroPedido extends JFrame {
 
     private void guardarPedido() {
 
-        String textoId = txtId.getText().trim();
-        String direccion = txtDireccion.getText().trim();
+        String textoId =
+                txtId.getText().trim();
 
-        if (textoId.isEmpty() || direccion.isEmpty()) {
+        String direccion =
+                txtDireccion.getText().trim();
+
+        // Validar campos vacíos
+        if (textoId.isEmpty()
+                || direccion.isEmpty()) {
 
             JOptionPane.showMessageDialog(
                     this,
@@ -106,6 +132,7 @@ public class VentanaRegistroPedido extends JFrame {
 
         int id;
 
+        // Validar ID
         try {
 
             id = Integer.parseInt(textoId);
@@ -122,7 +149,7 @@ public class VentanaRegistroPedido extends JFrame {
                 return;
             }
 
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException e) {
 
             JOptionPane.showMessageDialog(
                     this,
@@ -138,78 +165,93 @@ public class VentanaRegistroPedido extends JFrame {
                 (String) comboTipo.getSelectedItem();
 
         /*
-         * La pauta de Semana 6 no solicita ingresar distancia,
-         * por lo que se utiliza 0 km en los pedidos registrados
-         * desde la interfaz gráfica.
+         * La tabla pedido de Semana 7 no almacena distancia,
+         * por lo que para conservar la jerarquía de clases
+         * se utiliza 0 km.
          */
         double distanciaKm = 0;
 
         Pedido pedido;
 
+        // Crear el tipo correcto de pedido
         switch (tipo) {
 
             case "Comida":
+
                 pedido = new PedidoComida(
                         id,
                         direccion,
                         distanciaKm
                 );
+
                 break;
 
             case "Encomienda":
+
                 pedido = new PedidoEncomienda(
                         id,
                         direccion,
                         distanciaKm
                 );
+
                 break;
 
             case "Express":
+
                 pedido = new PedidoExpress(
                         id,
                         direccion,
                         distanciaKm
                 );
+
                 break;
 
             default:
+
                 JOptionPane.showMessageDialog(
                         this,
-                        "Tipo de pedido inválido."
+                        "Tipo de pedido inválido.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
                 );
+
                 return;
         }
 
-        boolean agregado =
-                gestorPedidos.agregarPedido(pedido);
+        // Guardar el pedido en MySQL mediante JDBC
+        boolean guardado =
+                pedidoDAO.guardar(pedido);
 
-        if (!agregado) {
+        if (guardado) {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Ya existe un pedido con el ID " + id + ".",
-                    "ID duplicado",
-                    JOptionPane.WARNING_MESSAGE
+                    "Pedido registrado correctamente en MySQL.",
+                    "SpeedFast",
+                    JOptionPane.INFORMATION_MESSAGE
             );
 
-            return;
+            limpiarCampos();
+
+        } else {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se pudo registrar el pedido.\n"
+                            + "Compruebe que el ID no esté duplicado.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
-
-        JOptionPane.showMessageDialog(
-                this,
-                "Pedido registrado correctamente.",
-                "SpeedFast",
-                JOptionPane.INFORMATION_MESSAGE
-        );
-
-        limpiarCampos();
     }
 
     private void limpiarCampos() {
 
         txtId.setText("");
         txtDireccion.setText("");
+
         comboTipo.setSelectedIndex(0);
+
         txtId.requestFocus();
     }
 }

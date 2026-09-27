@@ -1,25 +1,30 @@
 package vista;
 
-import modelo.GestorPedidos;
+import dao.PedidoDAO;
 import modelo.Pedido;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 public class VentanaListaPedidos extends JFrame {
-
-    private final GestorPedidos gestorPedidos;
 
     private JTable tablaPedidos;
     private DefaultTableModel modeloTabla;
 
-    public VentanaListaPedidos(GestorPedidos gestorPedidos) {
+    private final PedidoDAO pedidoDAO;
 
-        this.gestorPedidos = gestorPedidos;
+    public VentanaListaPedidos() {
 
-        setTitle("SpeedFast - Lista de Pedidos");
+        pedidoDAO = new PedidoDAO();
+
+        setTitle(
+                "SpeedFast - Lista de Pedidos"
+        );
+
         setSize(650, 400);
+
         setLocationRelativeTo(null);
 
         setDefaultCloseOperation(
@@ -27,25 +32,36 @@ public class VentanaListaPedidos extends JFrame {
         );
 
         inicializarComponentes();
+
         actualizarTabla();
     }
 
     private void inicializarComponentes() {
 
-        setLayout(new BorderLayout(10, 10));
+        setLayout(
+                new BorderLayout(10, 10)
+        );
 
         JLabel titulo = new JLabel(
-                "PEDIDOS REGISTRADOS",
+                "PEDIDOS REGISTRADOS EN MYSQL",
                 SwingConstants.CENTER
         );
 
         titulo.setFont(
-                new Font("Arial", Font.BOLD, 18)
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        18
+                )
         );
 
-        add(titulo, BorderLayout.NORTH);
+        add(
+                titulo,
+                BorderLayout.NORTH
+        );
 
         String[] columnas = {
+
                 "ID",
                 "Dirección",
                 "Tipo",
@@ -53,7 +69,10 @@ public class VentanaListaPedidos extends JFrame {
         };
 
         modeloTabla =
-                new DefaultTableModel(columnas, 0) {
+                new DefaultTableModel(
+                        columnas,
+                        0
+                ) {
 
                     @Override
                     public boolean isCellEditable(
@@ -72,28 +91,39 @@ public class VentanaListaPedidos extends JFrame {
         JScrollPane scroll =
                 new JScrollPane(tablaPedidos);
 
-        add(scroll, BorderLayout.CENTER);
+        add(
+                scroll,
+                BorderLayout.CENTER
+        );
 
         JButton btnActualizar =
-                new JButton("Actualizar");
+                new JButton(
+                        "Actualizar desde MySQL"
+                );
 
         btnActualizar.addActionListener(
                 e -> actualizarTabla()
         );
 
-        JPanel panelBoton = new JPanel();
+        JPanel panelBoton =
+                new JPanel();
 
         panelBoton.add(btnActualizar);
 
-        add(panelBoton, BorderLayout.SOUTH);
+        add(
+                panelBoton,
+                BorderLayout.SOUTH
+        );
     }
 
     private void actualizarTabla() {
 
         modeloTabla.setRowCount(0);
 
-        for (Pedido pedido :
-                gestorPedidos.getPedidos()) {
+        List<Pedido> pedidos =
+                pedidoDAO.listarTodos();
+
+        for (Pedido pedido : pedidos) {
 
             Object[] fila = {
 
