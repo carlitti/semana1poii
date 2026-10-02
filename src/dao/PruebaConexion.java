@@ -9,11 +9,9 @@ public class PruebaConexion {
 
         try (Connection conexion = ConexionBD.conectar()) {
 
-            if (conexion != null) {
-                System.out.println(
-                        "Conexion exitosa a speedfast_db."
-                );
-            }
+            System.out.println(
+                    "Conexión exitosa a speedfast_db."
+            );
 
         } catch (SQLException e) {
 

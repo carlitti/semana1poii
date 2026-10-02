@@ -15,7 +15,8 @@ public class Entrega {
             int idPedido,
             int idRepartidor,
             LocalDate fecha,
-            LocalTime hora) {
+            LocalTime hora
+    ) {
 
         this.idPedido = idPedido;
         this.idRepartidor = idRepartidor;
@@ -28,7 +29,8 @@ public class Entrega {
             int idPedido,
             int idRepartidor,
             LocalDate fecha,
-            LocalTime hora) {
+            LocalTime hora
+    ) {
 
         this.id = id;
         this.idPedido = idPedido;
@@ -41,19 +43,39 @@ public class Entrega {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getIdPedido() {
         return idPedido;
+    }
+
+    public void setIdPedido(int idPedido) {
+        this.idPedido = idPedido;
     }
 
     public int getIdRepartidor() {
         return idRepartidor;
     }
 
+    public void setIdRepartidor(int idRepartidor) {
+        this.idRepartidor = idRepartidor;
+    }
+
     public LocalDate getFecha() {
         return fecha;
     }
 
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
+
     public LocalTime getHora() {
         return hora;
+    }
+
+    public void setHora(LocalTime hora) {
+        this.hora = hora;
     }
 }

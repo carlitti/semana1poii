@@ -2,6 +2,7 @@ package modelo;
 
 public class Repartidor implements Runnable {
 
+    private int id;
     private String nombre;
     private ZonaDeCarga zonaDeCarga;
 
@@ -11,14 +12,38 @@ public class Repartidor implements Runnable {
         this.zonaDeCarga = zonaDeCarga;
     }
 
-    // Constructor utilizado para obtener repartidores desde MySQL
+    // Constructor utilizado al registrar un repartidor en MySQL
     public Repartidor(String nombre) {
         this.nombre = nombre;
         this.zonaDeCarga = null;
     }
 
+    // Constructor utilizado al leer repartidores desde MySQL
+    public Repartidor(int id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+        this.zonaDeCarga = null;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getNombre() {
         return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    @Override
+    public String toString() {
+        return id + " - " + nombre;
     }
 
     @Override

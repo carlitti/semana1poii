@@ -8,6 +8,7 @@ import java.util.List;
 
 public class RepartidorDAO {
 
+    // CREATE
     public int guardar(Repartidor repartidor) {
 
         String sql = """
@@ -34,7 +35,12 @@ public class RepartidorDAO {
             try (ResultSet claves = statement.getGeneratedKeys()) {
 
                 if (claves.next()) {
-                    return claves.getInt(1);
+
+                    int idGenerado = claves.getInt(1);
+
+                    repartidor.setId(idGenerado);
+
+                    return idGenerado;
                 }
             }
 
@@ -49,6 +55,8 @@ public class RepartidorDAO {
         return -1;
     }
 
+
+    // READ
     public List<Repartidor> listarTodos() {
 
         List<Repartidor> repartidores =
@@ -70,11 +78,14 @@ public class RepartidorDAO {
 
             while (resultado.next()) {
 
+                int id =
+                        resultado.getInt("id");
+
                 String nombre =
                         resultado.getString("nombre");
 
                 repartidores.add(
-                        new Repartidor(nombre)
+                        new Repartidor(id, nombre)
                 );
             }
 
@@ -87,5 +98,83 @@ public class RepartidorDAO {
         }
 
         return repartidores;
+    }
+
+
+    // UPDATE
+    public boolean actualizar(Repartidor repartidor) {
+
+        String sql = """
+                UPDATE repartidor
+                SET nombre = ?
+                WHERE id = ?
+                """;
+
+        try (
+                Connection conexion = ConexionBD.conectar();
+                PreparedStatement statement =
+                        conexion.prepareStatement(sql)
+        ) {
+
+            statement.setString(
+                    1,
+                    repartidor.getNombre()
+            );
+
+            statement.setInt(
+                    2,
+                    repartidor.getId()
+            );
+
+            int filasAfectadas =
+                    statement.executeUpdate();
+
+            return filasAfectadas > 0;
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al actualizar repartidor: "
+                            + e.getMessage()
+            );
+
+            return false;
+        }
+    }
+
+
+    // DELETE
+    public boolean eliminar(int id) {
+
+        String sql = """
+                DELETE FROM repartidor
+                WHERE id = ?
+                """;
+
+        try (
+                Connection conexion = ConexionBD.conectar();
+                PreparedStatement statement =
+                        conexion.prepareStatement(sql)
+        ) {
+
+            statement.setInt(
+                    1,
+                    id
+            );
+
+            int filasAfectadas =
+                    statement.executeUpdate();
+
+            return filasAfectadas > 0;
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al eliminar repartidor: "
+                            + e.getMessage()
+            );
+
+            return false;
+        }
     }
 }

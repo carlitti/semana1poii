@@ -1,24 +1,44 @@
+# SpeedFast - Semana 8
+
+## Desarrollo Orientado a Objetos II
+
+Durante la Semana 8 se completó el ciclo funcional del sistema **SpeedFast**, integrando las operaciones CRUD con la interfaz gráfica Java Swing y la base de datos MySQL mediante JDBC.
+
+El sistema permite actualmente gestionar de forma persistente:
+
+- Pedidos.
+- Repartidores.
+- Entregas.
+
+A diferencia de etapas anteriores, ahora es posible **registrar, consultar, editar y eliminar información directamente desde la interfaz gráfica**, manteniendo los datos almacenados en MySQL.
+
 ---
 
-# Semana 7
+# Tecnologías utilizadas
 
-## Conectando aplicaciones Java con bases de datos mediante JDBC
+El proyecto utiliza:
 
-Durante la Semana 7 se incorporó persistencia de datos al sistema SpeedFast mediante una conexión entre la aplicación Java y una base de datos MySQL utilizando JDBC.
-
-A diferencia de las semanas anteriores, donde los datos se almacenaban temporalmente en memoria, los pedidos, repartidores y entregas ahora pueden almacenarse de forma persistente en una base de datos.
+- Java.
+- IntelliJ IDEA.
+- Java Swing.
+- MySQL.
+- JDBC.
+- MySQL Connector/J.
+- Patrón DAO.
+- Programación Orientada a Objetos.
+- Git y GitHub.
 
 ---
 
-## Base de datos
+# Base de datos
 
-Se creó la base de datos:
+La aplicación utiliza la base de datos:
 
 ```text
 speedfast_db
 ```
 
-La base de datos contiene las siguientes tablas:
+La base contiene las siguientes tablas:
 
 ```text
 pedido
@@ -26,16 +46,22 @@ repartidor
 entrega
 ```
 
-### Tabla pedido
+---
 
-Almacena:
+## Tabla `pedido`
 
-- ID del pedido.
-- Dirección de entrega.
-- Tipo de pedido.
-- Estado del pedido.
+Almacena la información de los pedidos realizados en el sistema.
 
-Los tipos utilizados son:
+Campos principales:
+
+- `id`
+- `direccion`
+- `tipo`
+- `estado`
+
+El campo `id` es generado automáticamente mediante `AUTO_INCREMENT`.
+
+Los tipos de pedido utilizados son:
 
 ```text
 COMIDA
@@ -43,104 +69,175 @@ ENCOMIENDA
 EXPRESS
 ```
 
-Los pedidos se registran inicialmente con estado:
+Los estados disponibles son:
 
 ```text
 PENDIENTE
+EN_REPARTO
+ENTREGADO
 ```
-
-### Tabla repartidor
-
-Almacena:
-
-- ID del repartidor.
-- Nombre del repartidor.
-
-### Tabla entrega
-
-Permite relacionar un pedido con un repartidor.
-
-Almacena:
-
-- ID de la entrega.
-- ID del pedido.
-- ID del repartidor.
-- Fecha.
-- Hora.
-
-Se implementaron claves foráneas para mantener la relación entre las tablas `pedido`, `repartidor` y `entrega`.
 
 ---
 
-## Conexión JDBC
+## Tabla `repartidor`
 
-Se agregó MySQL Connector/J al proyecto para permitir la comunicación entre Java y MySQL.
+Almacena los repartidores registrados en SpeedFast.
 
-La conexión se administra mediante la clase:
+Campos:
+
+- `id`
+- `nombre`
+
+El identificador se genera automáticamente mediante MySQL.
+
+---
+
+## Tabla `entrega`
+
+Relaciona un pedido con un repartidor.
+
+Campos:
+
+- `id`
+- `id_pedido`
+- `id_repartidor`
+- `fecha`
+- `hora`
+
+`id_pedido` e `id_repartidor` permiten relacionar cada entrega con los registros correspondientes de las tablas `pedido` y `repartidor`.
+
+Se utilizan claves foráneas para mantener la integridad de las relaciones entre las tablas.
+
+---
+
+# Conexión con MySQL mediante JDBC
+
+La conexión entre Java y MySQL se administra mediante:
 
 ```java
 ConexionBD
 ```
 
-La aplicación establece conexión con:
+La aplicación se conecta a:
 
 ```text
 jdbc:mysql://localhost:3306/speedfast_db
 ```
 
-Para abrir las conexiones se utiliza:
+Para establecer la conexión se utiliza:
 
 ```java
 DriverManager
 ```
 
-También se implementó manejo de excepciones mediante:
+y objetos JDBC como:
+
+```java
+Connection
+PreparedStatement
+ResultSet
+```
+
+También se utilizan bloques `try-with-resources` para cerrar automáticamente las conexiones y recursos utilizados.
+
+Las excepciones relacionadas con la base de datos son controladas mediante:
 
 ```java
 SQLException
 ```
 
-y cierre automático de recursos utilizando `try-with-resources`.
+---
+
+# Patrón DAO
+
+Para separar la lógica de acceso a datos del modelo y de la interfaz gráfica se utilizan clases DAO.
+
+El paquete:
+
+```text
+dao
+```
+
+contiene principalmente:
+
+```text
+ConexionBD.java
+PedidoDAO.java
+RepartidorDAO.java
+EntregaDAO.java
+```
+
+Cada DAO contiene las operaciones necesarias para trabajar con su entidad correspondiente.
 
 ---
 
-## Patrón DAO
+## RepartidorDAO
 
-Para separar la lógica de acceso a datos del resto de la aplicación se implementaron las siguientes clases:
+Permite realizar las operaciones:
 
 ```text
-PedidoDAO
-RepartidorDAO
-EntregaDAO
+CREATE  → guardar()
+READ    → listarTodos()
+UPDATE  → actualizar()
+DELETE  → eliminar()
 ```
 
-### PedidoDAO
+Funciones disponibles:
+
+- Registrar nuevos repartidores.
+- Obtener todos los repartidores almacenados.
+- Editar el nombre de un repartidor.
+- Eliminar repartidores.
+
+---
+
+## PedidoDAO
+
+Implementa las operaciones CRUD para los pedidos:
+
+```text
+CREATE  → guardar()
+READ    → listarTodos()
+UPDATE  → actualizar()
+DELETE  → eliminar()
+```
 
 Permite:
 
-- Guardar pedidos en MySQL.
-- Consultar pedidos registrados.
-- Recuperar información para mostrarla en la interfaz gráfica.
+- Registrar pedidos.
+- Consultar pedidos almacenados.
+- Modificar dirección, tipo y estado.
+- Eliminar pedidos.
+- Recuperar los datos desde MySQL para mostrarlos en la interfaz.
 
-Las operaciones utilizan:
+Cuando se registra un pedido, MySQL genera automáticamente su identificador.
+
+---
+
+## EntregaDAO
+
+Implementa las operaciones CRUD correspondientes a las entregas:
+
+```text
+CREATE  → guardar()
+READ    → listarTodos()
+UPDATE  → actualizar()
+DELETE  → eliminar()
+```
+
+Además incluye consultas adicionales:
 
 ```java
-PreparedStatement
-ResultSet
+listarPorPedido()
+listarPorRepartidor()
 ```
 
-### RepartidorDAO
+Esto permite filtrar las entregas según:
 
-Permite:
+- Pedido.
+- Repartidor.
 
-- Registrar repartidores.
-- Consultar los repartidores almacenados en la base de datos.
-
-La información obtenida desde MySQL es transformada nuevamente en objetos Java.
-
-### EntregaDAO
-
-Permite registrar una entrega relacionando:
+Cada entrega almacena:
 
 ```text
 Pedido
@@ -152,15 +249,54 @@ Fecha
 Hora
 ```
 
-La operación utiliza los identificadores correspondientes del pedido y del repartidor.
+---
+
+# Interfaz gráfica
+
+La aplicación utiliza **Java Swing**.
+
+Entre los componentes utilizados se encuentran:
+
+```text
+JFrame
+JPanel
+JTable
+JTextField
+JComboBox
+JButton
+JOptionPane
+```
+
+La ventana principal funciona como menú del sistema.
+
+Actualmente permite acceder a:
+
+```text
+Registrar Pedido
+Gestionar Pedidos
+Gestionar Repartidores
+Gestionar Entregas
+```
 
 ---
 
-## Integración con Java Swing
+# Registro de pedidos
 
-La interfaz gráfica desarrollada durante la Semana 6 fue integrada con la base de datos MySQL.
+La ventana:
 
-El flujo de registro funciona de la siguiente manera:
+```java
+VentanaRegistroPedido
+```
+
+permite ingresar:
+
+- Dirección.
+- Tipo de pedido.
+- Estado.
+
+El identificador no debe ser ingresado manualmente porque es generado automáticamente por MySQL.
+
+El flujo general es:
 
 ```text
 VentanaRegistroPedido
@@ -169,135 +305,377 @@ VentanaRegistroPedido
     PedidoDAO
         |
         v
-      JDBC
+       JDBC
         |
         v
-     MySQL
+      MySQL
 ```
 
-Al presionar **Guardar Pedido**, la información ingresada en el formulario se almacena directamente en la tabla `pedido`.
+Antes de registrar un pedido se validan los datos ingresados.
 
 ---
 
-## Listado de pedidos desde MySQL
+# Gestión de pedidos
 
-La ventana `VentanaListaPedidos` consulta directamente los pedidos almacenados en la base de datos.
+La ventana:
 
-El flujo utilizado es:
-
-```text
-MySQL
-  |
-  v
-PedidoDAO
-  |
-  v
-ResultSet
-  |
-  v
-List<Pedido>
-  |
-  v
-JTable
+```java
+VentanaListaPedidos
 ```
 
-El `JTable` muestra:
+permite visualizar los pedidos almacenados en una `JTable`.
+
+La tabla muestra:
 
 - ID.
 - Dirección.
 - Tipo.
+- Estado.
 - Tiempo estimado.
 
-El botón de actualización permite consultar nuevamente la información almacenada en MySQL.
+También permite:
 
----
+- Actualizar la tabla.
+- Editar pedidos.
+- Eliminar pedidos.
+- Filtrar por tipo.
+- Filtrar por estado.
 
-## Registro de repartidores y entregas
-
-Desde la ventana principal es posible seleccionar un pedido registrado y asignarle un repartidor.
-
-Cuando se inicia una entrega:
-
-1. Se selecciona un pedido almacenado en MySQL.
-2. Se ingresa el nombre del repartidor.
-3. El repartidor se registra en la tabla `repartidor`.
-4. MySQL genera el ID del repartidor.
-5. Se registra la relación entre el pedido y el repartidor en la tabla `entrega`.
-6. Se almacena la fecha y hora de la operación.
-7. Se muestra una confirmación al usuario.
-
----
-
-## Persistencia de datos
-
-Se comprobó el funcionamiento de la persistencia cerrando completamente la aplicación y ejecutándola nuevamente.
-
-Los pedidos registrados anteriormente continuaron disponibles al consultar la base de datos desde la ventana de listado.
-
-Esto demuestra que la información ya no depende únicamente de una colección almacenada temporalmente en memoria.
-
----
-
-## Componentes utilizados
-
-Durante la Semana 7 se utilizaron:
-
-- MySQL
-- JDBC
-- MySQL Connector/J
-- DriverManager
-- Connection
-- PreparedStatement
-- ResultSet
-- SQLException
-- Patrón DAO
-- Java Swing
-- JTable
-- JOptionPane
-- Claves primarias
-- Claves foráneas
-- Persistencia de datos
-
----
-
-## Estructura de acceso a datos
-
-Se incorporó el paquete:
+Ejemplo de filtros disponibles:
 
 ```text
-dao
+Tipo:
+TODOS
+COMIDA
+ENCOMIENDA
+EXPRESS
+
+Estado:
+TODOS
+PENDIENTE
+EN_REPARTO
+ENTREGADO
 ```
-
-con las clases:
-
-```text
-dao
-├── ConexionBD.java
-├── PedidoDAO.java
-├── RepartidorDAO.java
-└── EntregaDAO.java
-```
-
-Estas clases mantienen separada la lógica de acceso a MySQL de las clases correspondientes al modelo y la interfaz gráfica.
 
 ---
 
-## Funcionalidades implementadas en Semana 7
+# Gestión de repartidores
 
-- Conexión de Java con MySQL mediante JDBC.
-- Creación de la base de datos `speedfast_db`.
-- Creación de las tablas `pedido`, `repartidor` y `entrega`.
-- Implementación de claves primarias y foráneas.
-- Registro de pedidos desde Java Swing.
-- Persistencia de pedidos en MySQL.
-- Consulta de pedidos almacenados.
-- Visualización de los pedidos mediante JTable.
-- Registro de repartidores.
-- Registro de entregas.
-- Relación entre pedidos y repartidores.
-- Manejo de errores SQL.
+La ventana:
+
+```java
+VentanaRepartidores
+```
+
+permite:
+
+- Registrar repartidores.
+- Listar repartidores.
+- Editar repartidores.
+- Eliminar repartidores.
+
+Los datos son mostrados mediante una tabla:
+
+```text
+ID | Nombre
+```
+
+La aplicación valida que el nombre del repartidor no se encuentre vacío antes de registrar o actualizar información.
+
+---
+
+# Gestión de entregas
+
+La ventana:
+
+```java
+VentanaEntregas
+```
+
+permite administrar completamente las entregas.
+
+Para registrar una entrega se selecciona:
+
+```text
+Pedido
+Repartidor
+Fecha
+Hora
+```
+
+Los pedidos y repartidores se cargan automáticamente desde MySQL utilizando `JComboBox`.
+
+Por ejemplo:
+
+```text
+Pedido:
+#101 - Comida - sucre
+
+Repartidor:
+1 - carlos
+```
+
+Aunque el usuario observa información legible en los combos, internamente la aplicación conserva los identificadores necesarios para almacenar la relación en MySQL.
+
+El flujo utilizado es:
+
+```text
+PedidoDAO ──────┐
+                |
+                v
+          VentanaEntregas
+                ^
+                |
+RepartidorDAO ──┘
+                |
+                v
+          EntregaDAO
+                |
+                v
+              MySQL
+```
+
+---
+
+## Funciones de la gestión de entregas
+
+La ventana permite:
+
+- Registrar entregas.
+- Listar entregas.
+- Editar entregas.
+- Eliminar entregas.
+- Filtrar por pedido.
+- Filtrar por repartidor.
+- Combinar ambos filtros.
+
+La tabla muestra:
+
+```text
+ID | Pedido | Repartidor | Fecha | Hora
+```
+
+---
+
+# Validaciones
+
+Antes de ejecutar operaciones sobre la base de datos se realizan distintas validaciones.
+
+Entre ellas:
+
+- Campos obligatorios.
+- Nombre de repartidor no vacío.
+- Dirección de pedido no vacía.
+- Longitud válida de textos.
+- Selección de pedido.
+- Selección de repartidor.
+- Fecha obligatoria.
+- Hora obligatoria.
+- Formato válido de fecha.
+- Formato válido de hora.
+- Selección de un registro antes de editar.
+- Selección de un registro antes de eliminar.
+
+Ejemplo de fecha válida:
+
+```text
+2026-10-02
+```
+
+Ejemplo de hora válida:
+
+```text
+18:30
+```
+
+---
+
+# Manejo de errores
+
+Los DAO capturan errores producidos durante las operaciones SQL mediante:
+
+```java
+try {
+    // operación
+} catch (SQLException e) {
+    // manejo del error
+}
+```
+
+La interfaz entrega retroalimentación al usuario utilizando:
+
+```java
+JOptionPane
+```
+
+Se muestran mensajes para indicar:
+
+- Operaciones exitosas.
+- Datos incompletos.
+- Formatos incorrectos.
+- Errores durante registros.
+- Errores durante modificaciones.
+- Errores durante eliminaciones.
+
+Las conexiones JDBC utilizan `try-with-resources`, permitiendo cerrar automáticamente:
+
+```text
+Connection
+PreparedStatement
+ResultSet
+```
+
+---
+
+# Persistencia de datos
+
+Toda la información registrada permanece almacenada en MySQL después de cerrar la aplicación.
+
+Por ejemplo:
+
+```text
+Java Swing
+    |
+    v
+DAO
+    |
+    v
+JDBC
+    |
+    v
+MySQL
+```
+
+Al volver a ejecutar el programa, las ventanas consultan nuevamente la base de datos y muestran los registros almacenados.
+
+---
+
+# Organización del proyecto
+
+La aplicación mantiene separación entre las distintas responsabilidades.
+
+Una estructura simplificada es:
+
+```text
+src
+│
+├── controlador
+│
+├── dao
+│   ├── ConexionBD.java
+│   ├── PedidoDAO.java
+│   ├── RepartidorDAO.java
+│   └── EntregaDAO.java
+│
+├── interfaces
+│
+├── main
+│   └── Main.java
+│
+├── modelo
+│   ├── Pedido.java
+│   ├── PedidoComida.java
+│   ├── PedidoEncomienda.java
+│   ├── PedidoExpress.java
+│   ├── EstadoPedido.java
+│   ├── Repartidor.java
+│   ├── Entrega.java
+│   └── ZonaDeCarga.java
+│
+└── vista
+    ├── VentanaPrincipal.java
+    ├── VentanaRegistroPedido.java
+    ├── VentanaListaPedidos.java
+    ├── VentanaRepartidores.java
+    └── VentanaEntregas.java
+```
+
+Esta estructura permite mantener separadas:
+
+```text
+Modelo
+  ↓
+DAO
+  ↓
+Base de datos
+
+Vista
+  ↓
+DAO
+```
+
+---
+
+# Funcionalidades implementadas en Semana 8
+
+- CRUD completo de repartidores.
+- CRUD completo de pedidos.
+- CRUD completo de entregas.
+- Registro persistente mediante MySQL.
+- Uso de JDBC.
+- Uso de `PreparedStatement`.
+- Uso de `ResultSet`.
+- Recuperación de IDs generados mediante `AUTO_INCREMENT`.
+- Interfaz gráfica con Java Swing.
+- Visualización de datos mediante `JTable`.
+- Selección mediante `JComboBox`.
+- Validación de campos.
+- Validación de fecha y hora.
+- Mensajes mediante `JOptionPane`.
+- Filtros de pedidos por tipo.
+- Filtros de pedidos por estado.
+- Filtros de entregas por pedido.
+- Filtros de entregas por repartidor.
+- Edición de registros desde la interfaz.
+- Eliminación de registros desde la interfaz.
 - Cierre automático de recursos JDBC.
-- Persistencia de datos después de cerrar la aplicación.
+- Manejo de excepciones SQL.
+- Separación por capas.
+- Persistencia de datos.
+
+---
+
+# Flujo general de la aplicación
+
+```text
+                    ┌─────────────────────┐
+                    │  Ventana Principal  │
+                    └──────────┬──────────┘
+                               |
+          ┌────────────────────┼────────────────────┐
+          |                    |                    |
+          v                    v                    v
+      Pedidos             Repartidores          Entregas
+          |                    |                    |
+          v                    v                    v
+     PedidoDAO          RepartidorDAO          EntregaDAO
+          |                    |                    |
+          └────────────────────┼────────────────────┘
+                               |
+                               v
+                             JDBC
+                               |
+                               v
+                            MySQL
+```
+
+---
+
+# Ejecución
+
+Para ejecutar el proyecto se debe contar con:
+
+1. Java instalado.
+2. IntelliJ IDEA.
+3. MySQL en ejecución.
+4. Base de datos `speedfast_db`.
+5. MySQL Connector/J configurado en el proyecto.
+
+La aplicación se inicia desde:
+
+```text
+src/main/Main.java
+```
 
 ---
 
@@ -309,20 +687,22 @@ Estas clases mantienen separada la lógica de acceso a MySQL de las clases corre
 
 ✅ Semana 3: Interfaces, despacho, cancelación e historial.
 
-✅ Semana 4: Programación concurrente mediante Runnable y ExecutorService.
+✅ Semana 4: Programación concurrente mediante `Runnable` y `ExecutorService`.
 
 ✅ Semana 5: Sincronización, estados y zona de carga compartida.
 
 ✅ Semana 6: Interfaz gráfica mediante Java Swing.
 
-✅ Semana 7: Persistencia de datos mediante MySQL, JDBC y patrón DAO.
+✅ Semana 7: Persistencia mediante MySQL, JDBC y patrón DAO.
+
+✅ **Semana 8: Operaciones CRUD completas, validaciones y gestión integral mediante Java Swing y MySQL.**
 
 ---
 
 # Autor
 
-Carlos Felipe González Cereceda
+**Carlos Felipe González Cereceda**
 
 ## Desarrollo Orientado a Objetos II
 
-Proyecto académico SpeedFast.
+Proyecto académico **SpeedFast**.

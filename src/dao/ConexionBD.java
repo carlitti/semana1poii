@@ -11,8 +11,7 @@ public class ConexionBD {
 
     private static final String USER = "root";
 
-    private static final String PASSWORD =
-            "karlos100";
+    private static final String PASSWORD = "karlos100";
 
     public static Connection conectar() throws SQLException {
         return DriverManager.getConnection(
